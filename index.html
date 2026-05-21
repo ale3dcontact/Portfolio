@@ -1,0 +1,785 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+
+		<title>ale3d | Delineación & 3D</title>
+		<meta charset="utf-8" />
+		<style>
+				
+			.galeria-andamios a {
+				display: inline-block;
+				cursor: pointer;
+				text-decoration: none; 
+			}
+			.galeria-andamios {
+				display: flex;
+				justify-content: space-between;
+				margin-top: 20px;
+			}
+			.galeria-andamios a {
+				width: 48%; 
+			}
+			.galeria-andamios img {
+				width: 100%;
+				border-radius: 4px;
+				transition: transform 0.3s;
+			}
+			.galeria-andamios img:hover {
+				transform: scale(1.05); 
+			}
+			
+			.imagen-tecnica {
+				width: 100% !important;
+				margin-bottom: 2rem !important;
+			}
+			.imagen-tecnica img {
+				width: 100% !important;
+				height: auto !important;
+				border-radius: 4px; 
+				box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+			}
+			.justificado {
+				text-align: justify !important;
+				text-justify: inter-word !important;
+			}
+		
+			
+			h2.major {
+				display: table !important; 
+				margin: 0 auto 2rem auto !important; 
+				text-align: center !important;
+			}
+
+			
+			h2.major::after {
+				display: block !important;
+				margin: 0 auto !important;
+			}
+
+			
+			.perfil-bloque {
+				display: flex !important;
+				align-items: flex-start;
+				gap: 35px; 
+				margin-bottom: 2rem;
+			}
+
+			
+			.perfil-foto {
+				flex: 0 0 400px !important; 
+			}
+			.perfil-foto img {
+				width: 100% !important;
+				height: auto !important;
+				display: block !important;
+				background: transparent !important;
+				border: none !important;
+				box-shadow: none !important;
+			}
+
+			
+			.perfil-texto {
+				flex: 1 !important;
+			}
+			.perfil-texto p {
+				text-align: justify !important;
+				text-justify: inter-word;
+				margin-bottom: 1.5rem !important;
+			}
+
+			
+			@media screen and (max-width: 736px) {
+				.perfil-bloque {
+					flex-direction: column !important;
+					align-items: center !important;
+					text-align: center !important;
+				}
+				.perfil-texto p {
+					text-align: justify !important; 
+				}
+			}
+		
+		#ale-visor {
+			display: none;
+			position: fixed;
+			inset: 0;
+			z-index: 99999;
+			background: rgba(0, 0, 0, 0.92);
+			align-items: center;
+			justify-content: center;
+		}
+		#ale-visor.activo {
+			display: flex;
+		}
+		#ale-visor img {
+			max-width: 80vw;
+			max-height: 85vh;
+			object-fit: contain;
+			border-radius: 4px;
+			box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+			cursor: default;
+			pointer-events: none;
+		}
+		#ale-visor-caption {
+			position: fixed;
+			bottom: 4vh;
+			left: 50%;
+			transform: translateX(-50%);
+			color: #ccc;
+			font-size: 0.85em;
+			text-align: center;
+			pointer-events: none;
+			white-space: nowrap;
+		}
+		#ale-visor-cerrar {
+			position: fixed;
+			top: 20px;
+			right: 28px;
+			color: #fff;
+			font-size: 2em;
+			line-height: 1;
+			cursor: pointer;
+			opacity: 0.7;
+			transition: opacity 0.2s;
+			user-select: none;
+		}
+		#ale-visor-cerrar:hover { opacity: 1; }
+
+		
+		.ale-visor-flecha {
+			position: fixed;
+			top: 50%;
+			transform: translateY(-50%);
+			color: #fff;
+			font-size: 2.5em;
+			cursor: pointer;
+			opacity: 0.5;
+			transition: opacity 0.2s;
+			user-select: none;
+			padding: 20px 24px;
+			line-height: 1;
+			z-index: 100000;
+		}
+		.ale-visor-flecha:hover { opacity: 1; }
+		#ale-visor-prev { left: 10px; }
+		#ale-visor-next { right: 10px; }
+		.ale-visor-flecha.oculta { visibility: hidden; pointer-events: none; }
+		
+		.galeria-item .image.fit {
+			margin-bottom: 0 !important;
+		}
+		.galeria-item .pie-foto {
+			text-align: center;
+			font-size: 0.8em;
+			margin-top: 4px;
+			margin-bottom: 0;
+			color: #999;
+		}
+		</style>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		
+			<div id="wrapper">
+
+				
+					<header id="header">
+						<div class="logo" style="display: flex; align-items: center; justify-content: center;">
+							<img src="images/ale3d.png" alt="Ale3D Logo" style="width: 75px; height: 75px; object-fit: contain; object-position: center center; filter: invert(1); transform: translate(0px, 3px);" />
+						</div>
+						<div class="content">
+							<div class="inner">
+								<h1>Delineante CAD 2D/3D | Modelado 3D y BIM <br />Técnico en Proyectos de Obra Civil</h1>
+								<p>Geometría precisa y modelado digital aplicado a la industria y la edificación.<br />
+								Dominio técnico en tres dimensiones para transformar datos complejos en modelos ejecutables.</p>
+							</div>
+						</div>
+						<nav>
+							<ul>
+								<li><a href="#perfil">Perfil</a></li>
+								<li><a href="#cad">CAD/BIM</a></li>
+								<li><a href="#3d">3D</a></li>
+								<li><a href="#contacto">Contacto</a></li>
+								
+							</ul>
+						</nav>
+					</header>
+
+				
+					<div id="main">
+
+						
+							<article id="perfil">
+								<h2 class="major">Perfil Profesional</h2>
+    
+								<div class="perfil-bloque">
+        
+									<div class="perfil-foto">
+										<img src="images/Foto_sf.png" alt="Alejandro - Delineante y Artista 3D" />
+									</div>
+        
+									<div class="perfil-texto">
+										<p><br />Soy un perfil técnico especializado en la intersección entre la <strong>delineación estructural</strong> y el <strong>modelado 3D de entornos</strong>. Mi formación en Obra Civil y mi experiencia en el desarrollo de proyectos industriales me aportan un profundo entendimiento de la lógica constructiva, la escala y el detalle métrico.</p>
+            								
+									</div>
+
+        
+								</div> 
+								<p class="justificado">Esta base técnica es mi mayor ventaja al dar el salto a entornos digitales como <strong>Unreal Engine 5</strong>: no solo modelo geometrías, sino que diseño espacios con coherencia estructural, optimización de assets y rigor formal, ideales tanto para ingeniería como para la industria de la simulación o el arte de entornos.</p>
+								<hr /> <h3>Áreas de Especialización</h3>
+    
+								<div class="row">
+									<div class="col-6 col-12-medium">
+										<h4>Precisión Técnica (CAD/BIM)</h4>
+										<ul>
+											<li>Delineación 2D/3D avanzada (AutoCAD).</li>
+											<li>Interpretación de planos y soluciones estructurales.</li>
+											<li>Nociones de metodologías BIM.</li>
+											<li>Normativa, mediciones y replanteos de obra.</li>
+										</ul>
+									</div>
+        
+									<div class="col-6 col-12-medium">
+										<h4>Creación Digital (3D/Entornos)</h4>
+										<ul>
+											<li>Modelado Hard-Surface y estructuras modulares.</li>
+											<li>Integración y montaje de escenas en Unreal Engine 5.</li>
+											<li>Optimización de geometría para entornos interactivos.</li>
+											<li>Gestión de proporciones y fidelidad espacial.</li>
+										</ul>
+									</div>
+								</div>
+							</article>
+
+						
+							<article id="cad">
+								<h2 class="major">Producción CAD/BIM</h2>
+
+								<p class="justificado">Especialista en la generación de documentación técnica de alta precisión, garantizando la correcta interpretación normativa y constructiva. Mi enfoque en CAD trasciende el dibujo; se centra en la creación de bases de datos geométricas fiables para la fase de construcción.</p>
+
+								<p class="justificado">Dominio avanzado de herramientas de dibujo técnico y entornos BIM, con capacidad para resolver geometrías complejas, optimizar estándares de capas y automatizar flujos de trabajo para minimizar errores métricos en obra.</p>
+
+								<div style="width: 100%; display: flex; flex-wrap: wrap; gap: 20px;">
+
+									<div class="galeria-item" style="flex: 1 1 30%; min-width: 250px;">
+										<a href="images/CAD-1.jpg" data-visor data-galeria="cad" data-caption="Estructura volumétrica | Esfera: Alzado" class="visor-trigger">
+											<span class="image fit"><img src="images/CAD-1.jpg" alt="CAD imagen 1" /></span>
+										</a>
+										<p class="pie-foto">Estructura volumétrica | Esfera: Alzado</p>
+									</div>
+
+									<div class="galeria-item" style="flex: 1 1 30%; min-width: 250px;">
+										<a href="images/CAD-2.jpg" data-visor data-galeria="cad" data-caption="Estructura volumétrica | Esfera: Perspectivas" class="visor-trigger">
+											<span class="image fit"><img src="images/CAD-2.jpg" alt="CAD imagen 2" /></span>
+										</a>
+										<p class="pie-foto">Estructura volumétrica | Esfera: Perspectivas</p>
+									</div>
+
+									<div class="galeria-item" style="flex: 1 1 30%; min-width: 250px;">
+										<a href="images/CAD-3.jpg" data-visor data-galeria="cad" data-caption="Estructura volumétrica | Suspendido: Vistas" class="visor-trigger">
+											<span class="image fit"><img src="images/CAD-3.jpg" alt="CAD imagen 3" /></span>
+										</a>
+										<p class="pie-foto">Estructura volumétrica | Suspendido: Vistas</p>
+									</div>
+
+									<div class="galeria-item" style="flex: 1 1 30%; min-width: 250px;">
+										<a href="images/CAD-4.jpg" data-visor data-galeria="cad" data-caption="Estructura volumétrica | Suspendido: Perspectivas" class="visor-trigger">
+											<span class="image fit"><img src="images/CAD-4.jpg" alt="CAD imagen 4" /></span>
+										</a>
+										<p class="pie-foto">Estructura volumétrica | Suspendido: Perspectivas</p>
+									</div>
+
+									<div class="galeria-item" style="flex: 1 1 30%; min-width: 250px;">
+										<a href="images/CAD-5.jpg" data-visor data-galeria="cad" data-caption="Estructura volumétrica | Arriostrado: Vistas" class="visor-trigger">
+											<span class="image fit"><img src="images/CAD-5.jpg" alt="CAD imagen 5" /></span>
+										</a>
+										<p class="pie-foto">Estructura volumétrica | Arriostrado: Vistas</p>
+									</div>
+
+									<div class="galeria-item" style="flex: 1 1 30%; min-width: 250px;">
+										<a href="images/CAD-6.jpg" data-visor data-galeria="cad" data-caption="Estructura volumétrica | Arriostrado: Perspectivas" class="visor-trigger">
+											<span class="image fit"><img src="images/CAD-6.jpg" alt="CAD imagen 6" /></span>
+										</a>
+										<p class="pie-foto">Estructura volumétrica | Arriostrado: Perspectivas</p>
+									</div>
+
+									<div class="galeria-item" style="flex: 1 1 30%; min-width: 250px;">
+										<a href="images/CAD-7.jpg" data-visor data-galeria="cad" data-caption="Urbanización | Abastecimiento" class="visor-trigger">
+											<span class="image fit"><img src="images/CAD-7.jpg" alt="CAD imagen 7" /></span>
+										</a>
+										<p class="pie-foto">Urbanización | Abastecimiento</p>
+									</div>
+
+									<div class="galeria-item" style="flex: 1 1 30%; min-width: 250px;">
+										<a href="images/CAD-8.jpg" data-visor data-galeria="cad" data-caption="Urbanización | Saneamiento" class="visor-trigger">
+											<span class="image fit"><img src="images/CAD-8.jpg" alt="CAD imagen 8" /></span>
+										</a>
+										<p class="pie-foto">Urbanización | Saneamiento</p>
+									</div>
+
+								</div>
+
+							</article>
+
+						
+							<article id="3d">
+								<h2 class="major">Entornos 3D y simulación</h2>
+
+								<p class="justificado">Especialista en la transformación de datos técnicos en entornos 3D fotorrealistas y simulaciones de precisión técnica. Mi enfoque en el modelado 3D va más allá de la mera representación visual; se orienta a la validación espacial y la optimización de procesos constructivos antes de su ejecución en el mundo real.</p>
+
+								<p class="justificado">Dominio avanzado de motores de renderizado y entornos de simulación en tiempo real (Blender/Unreal Engine), con capacidad para integrar modelos BIM complejos, gestionar iluminación, texturizado técnico y simulación de entornos, facilitando una comunicación visual rigurosa y ejecutable.</p>
+
+								<div style="width: 100%; display: flex; flex-wrap: wrap; gap: 20px;">
+
+									<div class="galeria-item" style="flex: 1 1 30%; min-width: 250px;">
+										<a href="images/3D-1.jpg" data-visor data-galeria="3d" data-caption="Blender | Reconstrucción 3D: Vista A" class="visor-trigger">
+											<span class="image fit"><img src="images/3D-1.jpg" alt="3D imagen 1" /></span>
+										</a>
+										<p class="pie-foto">Blender | Reconstrucción 3D: Vista A</p>
+									</div>
+
+									<div class="galeria-item" style="flex: 1 1 30%; min-width: 250px;">
+										<a href="images/3D-2.jpg" data-visor data-galeria="3d" data-caption="Blender | Reconstrucción 3D: Vista B" class="visor-trigger">
+											<span class="image fit"><img src="images/3D-2.jpg" alt="3D imagen 2" /></span>
+										</a>
+										<p class="pie-foto">Blender | Reconstrucción 3D: Vista B</p>
+									</div>
+
+									<div class="galeria-item" style="flex: 1 1 30%; min-width: 250px;">
+										<a href="images/3D-3.jpg" data-visor data-galeria="3d" data-caption="Simulación | Redes parking: Vista A" class="visor-trigger">
+											<span class="image fit"><img src="images/3D-3.jpg" alt="3D imagen 3" /></span>
+										</a>
+										<p class="pie-foto">Simulación | Redes parking: Vista A</p>
+									</div>
+
+									<div class="galeria-item" style="flex: 1 1 30%; min-width: 250px;">
+										<a href="images/3D-4.jpg" data-visor data-galeria="3d" data-caption="Simulación | Redes parking: Vista B" class="visor-trigger">
+											<span class="image fit"><img src="images/3D-4.jpg" alt="3D imagen 4" /></span>
+										</a>
+										<p class="pie-foto">Simulación | Redes parking: Vista B</p>
+									</div>
+
+									<div class="galeria-item" style="flex: 1 1 30%; min-width: 250px;">
+										<a href="images/3D-5.jpg" data-visor data-galeria="3d" data-caption="Render | Sketchup: Vivienda A" class="visor-trigger">
+											<span class="image fit"><img src="images/3D-5.jpg" alt="3D imagen 5" /></span>
+										</a>
+										<p class="pie-foto">Render | Sketchup: Vivienda A</p>
+									</div>
+
+									<div class="galeria-item" style="flex: 1 1 30%; min-width: 250px;">
+										<a href="images/3D-6.jpg" data-visor data-galeria="3d" data-caption="Render | Sketchup: Vivienda B" class="visor-trigger">
+											<span class="image fit"><img src="images/3D-6.jpg" alt="3D imagen 6" /></span>
+										</a>
+										<p class="pie-foto">Render | Sketchup: Vivienda B</p>
+									</div>
+
+									<div class="galeria-item" style="flex: 1 1 30%; min-width: 250px;">
+										<a href="images/3D-7.jpg" data-visor data-galeria="3d" data-caption="Unreal | Integración y texturizado: Vista A" class="visor-trigger">
+											<span class="image fit"><img src="images/3D-7.jpg" alt="3D imagen 7" /></span>
+										</a>
+										<p class="pie-foto">Unreal | Integración y texturizado: Vista A</p>
+									</div>
+
+									<div class="galeria-item" style="flex: 1 1 30%; min-width: 250px;">
+										<a href="images/3D-8.jpg" data-visor data-galeria="3d" data-caption="Unreal | Integración y texturizado: Vista B" class="visor-trigger">
+											<span class="image fit"><img src="images/3D-8.jpg" alt="3D imagen 8" /></span>
+										</a>
+										<p class="pie-foto">Unreal | Integración y texturizado: Vista B</p>
+									</div>
+
+								</div>
+
+							</article>
+
+						
+							<article id="contacto">
+								<h2 class="major">Contacto</h2>
+								<p>Si deseas incorporar un perfil técnico-digital a tu equipo, colaborar en un proyecto o solicitar mis servicios, puedes rellenar el formulario o escribirme directamente.</p>
+    
+								<form method="post" action="https://formspree.io/f/xeedeqok">
+									<div class="fields">
+										<div class="field half">
+											<label for="name">Nombre</label>
+											<input type="text" name="name" id="name" required />
+										</div>
+										<div class="field half">
+											<label for="email">Correo electrónico</label>
+											<input type="email" name="email" id="email" required />
+										</div>
+										<div class="field">
+											<label for="message">Mensaje</label>
+											<textarea name="message" id="message" rows="4" required></textarea>
+										</div>
+									</div>
+									<ul class="actions">
+										<li><input type="submit" value="Enviar Mensaje" class="primary" /></li>
+										<li><input type="reset" value="Limpiar" /></li>
+									</ul>
+								</form>
+
+								<ul class="icons">
+									<li><a href="https://www.linkedin.com/in/ale3d/" class="icon brands fa-linkedin-in" target="_blank"><span class="label">LinkedIn</span></a></li>
+        
+									<li><a href="https://github.com/ale3dcontact" class="icon brands fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+        
+									<li><a href="mailto:contact@ale3d.com" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+								</ul>
+							</article>
+
+						
+							<article id="elements">
+								<h2 class="major">Elements</h2>
+
+								<section>
+									<h3 class="major">Text</h3>
+									<p>This is <b>bold</b> and this is <strong>strong</strong>. This is <i>italic</i> and this is <em>emphasized</em>.
+									This is <sup>superscript</sup> text and this is <sub>subscript</sub> text.
+									This is <u>underlined</u> and this is code: <code>for (;;) { ... }</code>. Finally, <a href="#">this is a link</a>.</p>
+									<hr />
+									<h2>Heading Level 2</h2>
+									<h3>Heading Level 3</h3>
+									<h4>Heading Level 4</h4>
+									<h5>Heading Level 5</h5>
+									<h6>Heading Level 6</h6>
+									<hr />
+									<h4>Blockquote</h4>
+									<blockquote>Fringilla nisl. Donec accumsan interdum nisi, quis tincidunt felis sagittis eget tempus euismod. Vestibulum ante ipsum primis in faucibus vestibulum. Blandit adipiscing eu felis iaculis volutpat ac adipiscing accumsan faucibus. Vestibulum ante ipsum primis in faucibus lorem ipsum dolor sit amet nullam adipiscing eu felis.</blockquote>
+									<h4>Preformatted</h4>
+									<pre><code>i = 0;
+
+while (!deck.isInOrder()) {
+    print 'Iteration ' + i;
+    deck.shuffle();
+    i++;
+}
+
+print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
+								</section>
+
+								<section>
+									<h3 class="major">Lists</h3>
+
+									<h4>Unordered</h4>
+									<ul>
+										<li>Dolor pulvinar etiam.</li>
+										<li>Sagittis adipiscing.</li>
+										<li>Felis enim feugiat.</li>
+									</ul>
+
+									<h4>Alternate</h4>
+									<ul class="alt">
+										<li>Dolor pulvinar etiam.</li>
+										<li>Sagittis adipiscing.</li>
+										<li>Felis enim feugiat.</li>
+									</ul>
+
+									<h4>Ordered</h4>
+									<ol>
+										<li>Dolor pulvinar etiam.</li>
+										<li>Etiam vel felis viverra.</li>
+										<li>Felis enim feugiat.</li>
+										<li>Dolor pulvinar etiam.</li>
+										<li>Etiam vel felis lorem.</li>
+										<li>Felis enim et feugiat.</li>
+									</ol>
+									<h4>Icons</h4>
+									<ul class="icons">
+										<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+										<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+										<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+										<li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
+									</ul>
+
+									<h4>Actions</h4>
+									<ul class="actions">
+										<li><a href="#" class="button primary">Default</a></li>
+										<li><a href="#" class="button">Default</a></li>
+									</ul>
+									<ul class="actions stacked">
+										<li><a href="#" class="button primary">Default</a></li>
+										<li><a href="#" class="button">Default</a></li>
+									</ul>
+								</section>
+
+								<section>
+									<h3 class="major">Table</h3>
+									<h4>Default</h4>
+									<div class="table-wrapper">
+										<table>
+											<thead>
+												<tr>
+													<th>Name</th>
+													<th>Description</th>
+													<th>Price</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>Item One</td>
+													<td>Ante turpis integer aliquet porttitor.</td>
+													<td>29.99</td>
+												</tr>
+												<tr>
+													<td>Item Two</td>
+													<td>Vis ac commodo adipiscing arcu aliquet.</td>
+													<td>19.99</td>
+												</tr>
+												<tr>
+													<td>Item Three</td>
+													<td> Morbi faucibus arcu accumsan lorem.</td>
+													<td>29.99</td>
+												</tr>
+												<tr>
+													<td>Item Four</td>
+													<td>Vitae integer tempus condimentum.</td>
+													<td>19.99</td>
+												</tr>
+												<tr>
+													<td>Item Five</td>
+													<td>Ante turpis integer aliquet porttitor.</td>
+													<td>29.99</td>
+												</tr>
+											</tbody>
+											<tfoot>
+												<tr>
+													<td colspan="2"></td>
+													<td>100.00</td>
+												</tr>
+											</tfoot>
+										</table>
+									</div>
+
+									<h4>Alternate</h4>
+									<div class="table-wrapper">
+										<table class="alt">
+											<thead>
+												<tr>
+													<th>Name</th>
+													<th>Description</th>
+													<th>Price</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>Item One</td>
+													<td>Ante turpis integer aliquet porttitor.</td>
+													<td>29.99</td>
+												</tr>
+												<tr>
+													<td>Item Two</td>
+													<td>Vis ac commodo adipiscing arcu aliquet.</td>
+													<td>19.99</td>
+												</tr>
+												<tr>
+													<td>Item Three</td>
+													<td> Morbi faucibus arcu accumsan lorem.</td>
+													<td>29.99</td>
+												</tr>
+												<tr>
+													<td>Item Four</td>
+													<td>Vitae integer tempus condimentum.</td>
+													<td>19.99</td>
+												</tr>
+												<tr>
+													<td>Item Five</td>
+													<td>Ante turpis integer aliquet porttitor.</td>
+													<td>29.99</td>
+												</tr>
+											</tbody>
+											<tfoot>
+												<tr>
+													<td colspan="2"></td>
+													<td>100.00</td>
+												</tr>
+											</tfoot>
+										</table>
+									</div>
+								</section>
+
+								<section>
+									<h3 class="major">Buttons</h3>
+									<ul class="actions">
+										<li><a href="#" class="button primary">Primary</a></li>
+										<li><a href="#" class="button">Default</a></li>
+									</ul>
+									<ul class="actions">
+										<li><a href="#" class="button">Default</a></li>
+										<li><a href="#" class="button small">Small</a></li>
+									</ul>
+									<ul class="actions">
+										<li><a href="#" class="button primary icon solid fa-download">Icon</a></li>
+										<li><a href="#" class="button icon solid fa-download">Icon</a></li>
+									</ul>
+									<ul class="actions">
+										<li><span class="button primary disabled">Disabled</span></li>
+										<li><span class="button disabled">Disabled</span></li>
+									</ul>
+								</section>
+
+								<section>
+									<h3 class="major">Form</h3>
+									<form method="post" action="#">
+										<div class="fields">
+											<div class="field half">
+												<label for="demo-name">Name</label>
+												<input type="text" name="demo-name" id="demo-name" value="" placeholder="Jane Doe" />
+											</div>
+											<div class="field half">
+												<label for="demo-email">Email</label>
+												<input type="email" name="demo-email" id="demo-email" value="" placeholder="jane@untitled.tld" />
+											</div>
+											<div class="field">
+												<label for="demo-category">Category</label>
+												<select name="demo-category" id="demo-category">
+													<option value="">-</option>
+													<option value="1">Manufacturing</option>
+													<option value="1">Shipping</option>
+													<option value="1">Administration</option>
+													<option value="1">Human Resources</option>
+												</select>
+											</div>
+											<div class="field half">
+												<input type="radio" id="demo-priority-low" name="demo-priority" checked>
+												<label for="demo-priority-low">Low</label>
+											</div>
+											<div class="field half">
+												<input type="radio" id="demo-priority-high" name="demo-priority">
+												<label for="demo-priority-high">High</label>
+											</div>
+											<div class="field half">
+												<input type="checkbox" id="demo-copy" name="demo-copy">
+												<label for="demo-copy">Email me a copy</label>
+											</div>
+											<div class="field half">
+												<input type="checkbox" id="demo-human" name="demo-human" checked>
+												<label for="demo-human">Not a robot</label>
+											</div>
+											<div class="field">
+												<label for="demo-message">Message</label>
+												<textarea name="demo-message" id="demo-message" placeholder="Enter your message" rows="6"></textarea>
+											</div>
+										</div>
+										<ul class="actions">
+											<li><input type="submit" value="Send Message" class="primary" /></li>
+											<li><input type="reset" value="Reset" /></li>
+										</ul>
+									</form>
+								</section>
+
+							</article>
+
+					</div>
+
+				
+					<footer id="footer">
+						<p class="copyright">&copy;ale3d | Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+					</footer>
+
+			</div>
+
+		
+			<div id="bg"></div>
+
+		
+		<div id="ale-visor">
+			<span id="ale-visor-cerrar">&times;</span>
+			<span class="ale-visor-flecha" id="ale-visor-prev">&#8249;</span>
+			<img id="ale-visor-img" src="" alt="" />
+			<span class="ale-visor-flecha" id="ale-visor-next">&#8250;</span>
+			<div id="ale-visor-caption"></div>
+		</div>
+
+		
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script>
+				
+
+				var visor      = document.getElementById('ale-visor');
+				var visorImg   = document.getElementById('ale-visor-img');
+				var visorCap   = document.getElementById('ale-visor-caption');
+				var visorX     = document.getElementById('ale-visor-cerrar');
+				var visorPrev  = document.getElementById('ale-visor-prev');
+				var visorNext  = document.getElementById('ale-visor-next');
+
+				var galeria    = []; 
+				var indiceActual = 0;
+
+				function recogerGaleria(nombreGaleria) {
+					galeria = [];
+					document.querySelectorAll('a.visor-trigger[data-galeria="' + nombreGaleria + '"]').forEach(function(a) {
+						galeria.push({
+							src:     a.getAttribute('href'),
+							caption: a.getAttribute('data-caption') || ''
+						});
+					});
+				}
+
+				function mostrarImagen(indice) {
+					if (!galeria.length) return;
+					indiceActual = indice;
+					var item = galeria[indiceActual];
+					visorImg.src = item.src;
+					visorCap.textContent = item.caption;
+					visorPrev.classList.toggle('oculta', indiceActual === 0);
+					visorNext.classList.toggle('oculta', indiceActual === galeria.length - 1);
+				}
+
+				function abrirVisor(enlace) {
+					var nombreGaleria = enlace.getAttribute('data-galeria');
+					var src = enlace.getAttribute('href');
+					recogerGaleria(nombreGaleria);
+					var indice = galeria.findIndex(function(i) { return i.src === src; });
+					visor.classList.add('activo');
+					document.body.style.overflow = 'hidden';
+					mostrarImagen(indice >= 0 ? indice : 0);
+				}
+
+				function cerrarVisor() {
+					visor.classList.remove('activo');
+					visorImg.src = '';
+					document.body.style.overflow = '';
+				}
+
+				
+				document.addEventListener('click', function(e) {
+					var enlace = e.target.closest('a.visor-trigger');
+					if (!enlace) return;
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					abrirVisor(enlace);
+				}, true);
+
+				
+				visor.addEventListener('click', function(e) {
+					e.stopImmediatePropagation();
+
+					if (e.target.closest('#ale-visor-cerrar')) {
+						cerrarVisor();
+					} else if (e.target.closest('#ale-visor-prev')) {
+						if (indiceActual > 0) mostrarImagen(indiceActual - 1);
+					} else if (e.target.closest('#ale-visor-next')) {
+						if (indiceActual < galeria.length - 1) mostrarImagen(indiceActual + 1);
+					} else if (e.target === visor) {
+						cerrarVisor();
+					}
+				}, true);
+
+				
+				document.addEventListener('keydown', function(e) {
+					if (!visor.classList.contains('activo')) return;
+					if (e.key === 'Escape')      cerrarVisor();
+					if (e.key === 'ArrowLeft'  && indiceActual > 0)                  mostrarImagen(indiceActual - 1);
+					if (e.key === 'ArrowRight' && indiceActual < galeria.length - 1) mostrarImagen(indiceActual + 1);
+				});
+			</script>
+	</body>
+</html>
